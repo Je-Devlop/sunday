@@ -1,6 +1,6 @@
 import { screen, render } from "@testing-library/react";
 import user from "@testing-library/user-event";
-import SummaryForm from "../summary-form";
+import SummaryForm from "../Pages/Summary/summary-form";
 
 test("Check box should enable AND button should be disable", () => {
   render(<SummaryForm />);

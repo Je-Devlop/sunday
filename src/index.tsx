@@ -4,14 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import SummaryForm from './Pages/Summary/summary-form';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <SummaryForm />
+    <App />
   </React.StrictMode>
 );
 
