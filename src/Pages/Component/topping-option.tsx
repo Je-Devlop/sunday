@@ -1,10 +1,18 @@
-import { Col } from "react-bootstrap";
+import { Col, Form } from "react-bootstrap";
+import { useOrderDetails } from "../../context/order-detail";
 
 export default function ToppingOption ({ keyItem, name, imagePath }: any) {
+  const { updateItemCount } = useOrderDetails()
+  const hanldleChange = (e: any) => {
+    updateItemCount(name, e.target.checked? 1 : 0, "topping")
+  }
     return (
         <>
-          <Col key={keyItem} xs={12} sm={6} md={4} lg={3} style={{ textAlign: "center" }}>
+          <Col key={keyItem} xs={6} sm={4} md={3} lg={2} style={{ textAlign: "center" }}>
             <img style={{ width: "75%" }} src={`http://localhost:3030/${imagePath}`} alt={`${name} topping`} />
+            <Form.Group controlId={`${name}-topping-checkbox`}>
+              <Form.Check type="checkbox" onChange={hanldleChange} label={name}></Form.Check>
+            </Form.Group>
           </Col>
         </>
       );

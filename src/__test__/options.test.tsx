@@ -1,6 +1,5 @@
 import { render, screen } from "../testing-library-utils/testing-library-utils";
 import Options from "../Pages/Component/options";
-import { OrderDetailsProvider } from "../context/order-detail";
 
 
 test('display image for each scoop option from server', async () => {

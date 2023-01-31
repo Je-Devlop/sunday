@@ -41,3 +41,80 @@ test("should change scoop total when scoop change", async () => {
   await user.type(chocolateInput, "1");
   expect(scoopsSubTotal).toHaveTextContent("2.00");
 });
+
+test("should change topping total when topping is selected", async () => {
+  const user = userEvent.setup();
+  render(<OrderEntry />, {});
+
+  const topppingSubTotal = screen.getByText("Topping total: $", { exact: false });
+  expect(topppingSubTotal).toHaveTextContent("0.00");
+
+  const cherriesCheckBox = await screen.findByRole('checkbox', { name:'Cherries' })
+  await user.click(cherriesCheckBox)
+  expect(topppingSubTotal).toHaveTextContent("1.50");
+
+  // no need await because if pass condition cherriesCheckBox data is loaded
+  const hotFudgeCheckBox = screen.getByRole('checkbox', { name:'Hot fudge' }) 
+  await user.click(hotFudgeCheckBox)
+  expect(topppingSubTotal).toHaveTextContent("3.00");
+})
+
+describe("Grand total", () => {
+  test("grand total should be stat with $0.00", () => {
+    render(<OrderEntry/>, {});
+
+    const grandTotal = screen.getByRole("heading", {name: /grand total: \$/i})
+    expect(grandTotal).toHaveTextContent("0.00")
+  })
+
+  test("grand total update properly if scoop is added first", async () => {
+    const user = userEvent.setup();
+    render(<OrderEntry/>, {});
+
+    const grandTotal = screen.getByRole("heading", {name: /grand total: \$/i})
+    const vanillaInput = await screen.findByRole("spinbutton", {
+      name: "Vanilla",
+    });
+  
+    await user.clear(vanillaInput);
+    await user.type(vanillaInput, "1");
+    expect(grandTotal).toHaveTextContent("2.00")
+
+    const cherriesCheckbox = await screen.findByRole("checkbox", {name: "Cherries"})
+    await user.click(cherriesCheckbox)
+    expect(grandTotal).toHaveTextContent("3.50")
+  })
+
+  test("grand total update properly if toppping is added first", async () => {
+    const user = userEvent.setup()
+    
+    render(<OrderEntry/>, {})
+
+    const grandTotal = screen.getByRole("heading", {name: /grand total: \$/i})
+
+    const hotfugeCheckBox = await screen.findByRole("checkbox", {name:'Hot fudge'})
+    await user.click(hotfugeCheckBox)
+    expect(grandTotal).toHaveTextContent("1.50")
+
+    const vanillaInput = await screen.findByRole("spinbutton", {name: "Vanilla"})
+    await user.clear(vanillaInput);
+    await user.type(vanillaInput, "2");
+    expect(grandTotal).toHaveTextContent("5.50")
+  })
+
+  test("grand total update properly if item is remove", async () => {
+    const user = userEvent.setup()
+
+    render(<OrderEntry/>, {})
+
+    const grandTotal = screen.getByRole("heading", {name: /grand total: \$/i})
+    expect(grandTotal).toHaveTextContent("0.00")
+
+    const hotFudgeCheckBox = await screen.findByRole("checkbox", {name: "Hot fudge"})
+    await user.click(hotFudgeCheckBox)
+    expect(grandTotal).toHaveTextContent("1.50")
+
+    await user.click(hotFudgeCheckBox)
+    expect(grandTotal).toHaveTextContent("0.00")
+  })
+})
