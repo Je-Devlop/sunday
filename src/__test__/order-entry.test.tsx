@@ -10,7 +10,7 @@ test("handle error for scoops and topping api", async () => {
     rest.get("http://localhost:8989/topping", (req, res, ctx) => res(ctx.status(500)))
   );
 
-  render(<OrderEntry />, {});
+  render(<OrderEntry setOrderPhase={jest.fn()} />, {});
 
   await waitFor(async () => {
     const alert = await screen.findAllByRole("alert");
@@ -60,11 +60,14 @@ test("should change topping total when topping is selected", async () => {
 })
 
 describe("Grand total", () => {
+
   test("grand total should be stat with $0.00", () => {
-    render(<OrderEntry/>, {});
+    const { unmount } = render(<OrderEntry/>, {});
 
     const grandTotal = screen.getByRole("heading", {name: /grand total: \$/i})
     expect(grandTotal).toHaveTextContent("0.00")
+
+    unmount();
   })
 
   test("grand total update properly if scoop is added first", async () => {

@@ -34,7 +34,7 @@ export function OrderDetailsProvider(props: any) {
     setOptionCounts({ scoops: {}, topping: {} });
   }
 
-  //uttlity function
+  //utlity function
   function calculateTotal(optionType: string) {
     // get an array of counts for the option type (for example, [1, 2])
     const countsArray = Object.values(optionCounts[optionType]);

@@ -9,7 +9,7 @@ export default function ToppingOption ({ keyItem, name, imagePath }: any) {
     return (
         <>
           <Col key={keyItem} xs={6} sm={4} md={3} lg={2} style={{ textAlign: "center" }}>
-            <img style={{ width: "75%" }} src={`http://localhost:3030/${imagePath}`} alt={`${name} topping`} />
+            <img style={{ width: "75%" }} src={`http://localhost:8989${imagePath}`} alt={`${name} topping`} />
             <Form.Group controlId={`${name}-topping-checkbox`}>
               <Form.Check type="checkbox" onChange={hanldleChange} label={name}></Form.Check>
             </Form.Group>
