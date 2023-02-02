@@ -1,11 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "../testing-library-utils/testing-library-utils";
 import userEvent from "@testing-library/user-event";
 import App from "../App";
 
 test("Order phases for happy case", async () => {
   const user = userEvent.setup();
 
-  const { unmount } = render(<App />);
+  const { unmount } = render(<App />, {});
 
   //add ice cream scoops and topping
   const vanillaInput = await screen.findByRole("spinbutton", { name: /vanilla/i });
@@ -43,6 +43,9 @@ test("Order phases for happy case", async () => {
   const confirmOrderButton = screen.getByRole("button", { name: /confirm order/i });
   await user.click(confirmOrderButton);
 
+  const loading = screen.queryByText("loading");
+  expect(loading).toBeInTheDocument();
+
   const thankYouHeader = await screen.findByRole("heading", { name: /thank you/i });
   expect(thankYouHeader).toBeInTheDocument();
 
@@ -66,3 +69,42 @@ test("Order phases for happy case", async () => {
   // not wrapped in act() error
   unmount();
 });
+
+test("topping should not display when it not select", async () => {
+  const user = userEvent.setup()
+  const { unmount } = render(<App />, {});
+
+  const vanillaInput = await screen.findByRole("spinbutton", {name: /vanilla/i})
+  await user.clear(vanillaInput)
+  await user.type(vanillaInput, "2")
+
+  const orderButton = screen.getByRole("button",{name:/order sunday/i})
+  await user.click(orderButton)
+
+  const orderSummaryHeading = screen.getByRole("heading", {name: /order Summary/i})
+  expect(orderSummaryHeading).toBeInTheDocument()
+
+  const scoopsHeading = screen.getByRole("heading", { name: "Scoops: $4.00" });
+  expect(scoopsHeading).toBeInTheDocument();
+
+  const toppingHeading = screen.queryByRole("heading", { name: "Toppings: " });
+  expect(toppingHeading).not.toBeInTheDocument()
+
+  unmount()
+})
+
+test("order button should not display when ICream is not select", async () => {
+  const user = userEvent.setup()
+  const { unmount } = render(<App />, {});
+
+  const orderSummaryButton = screen.getByRole("button", {name: /order sunday/i})
+  expect(orderSummaryButton).toBeDisabled()
+
+  const vanillaInput = await screen.findByRole("spinbutton", {name: /vanilla/i})
+  await user.clear(vanillaInput)
+  await user.type(vanillaInput, "2")
+
+  expect(orderSummaryButton).toBeEnabled()
+
+  unmount()
+})
