@@ -6,8 +6,8 @@ import OrderEntry from "../Pages/Component/order-entry";
 
 test("handle error for scoops and topping api", async () => {
   server.resetHandlers(
-    rest.get("http://localhost:8989/scoops", (req, res, ctx) => res(ctx.status(500))),
-    rest.get("http://localhost:8989/topping", (req, res, ctx) => res(ctx.status(500)))
+    rest.get("http://localhost:8081/scoops", (req, res, ctx) => res(ctx.status(500))),
+    rest.get("http://localhost:8081/topping", (req, res, ctx) => res(ctx.status(500)))
   );
 
   render(<OrderEntry setOrderPhase={jest.fn()} />, {});

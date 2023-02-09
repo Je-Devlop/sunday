@@ -2,7 +2,7 @@
 import { rest } from "msw";
 
 export const handlers = [
-  rest.get("http://localhost:8989/scoops", (req, res, ctx) => {
+  rest.get("http://localhost:8081/scoops", (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json([
@@ -12,7 +12,7 @@ export const handlers = [
     );
   }),
 
-  rest.get("http://localhost:8989/toppings", (req, res, ctx) => {
+  rest.get("http://localhost:8081/toppings", (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json([
@@ -23,7 +23,7 @@ export const handlers = [
     );
   }),
 
-  rest.post("http://localhost:8989/order", (req, res, ctx) => {
+  rest.post("http://localhost:8081/order", (req, res, ctx) => {
     return res(ctx.status(201), ctx.json({ orderNumber: 123455676 }))
    
   }),

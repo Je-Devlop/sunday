@@ -41,7 +41,7 @@ export default function Options({ optionType }: any) {
         {title} total: {formatCurrency(totals[optionType])}
       </p>
       {iCreamItem.map((item, index) => (
-        <ItemComponent keyItem={index} name={item.name} imagePath={item.imagePath} />
+        <ItemComponent keyItem={index} name={item.name} imagePath={item.image_path} />
       ))}
     </Row>
   );
