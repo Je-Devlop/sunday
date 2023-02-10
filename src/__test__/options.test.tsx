@@ -42,6 +42,4 @@ test('Should not display when input scoops is not valid', async () => {
     await user.clear(vanillaInput)
     await user.type(vanillaInput, "1.5") 
     expect(scoopSubTotal).toHaveTextContent("$0.00")
-
-
 })

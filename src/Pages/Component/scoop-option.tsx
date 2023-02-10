@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { useOrderDetails } from "../../context/order-detail";
+import { IceCreamType } from "../../models/order-detail";
 
-export default function ScoopOption({ keyItem, name, imagePath }: {keyItem: number, name: string, imagePath: string}) {
+export default function ScoopOption({ keyItem, name, price, imagePath }: {keyItem: number, name: string, price: number, imagePath: string}) {
   const { updateItemCount } = useOrderDetails();
   const [isValid, setIsValid] = useState(true);
 
@@ -14,7 +15,7 @@ export default function ScoopOption({ keyItem, name, imagePath }: {keyItem: numb
 
     setIsValid(valueIsValid)
     const newValue = valueIsValid ? parseInt(currentValue) : 0;
-    updateItemCount(name, newValue, "scoops")
+    updateItemCount(name, newValue, price, IceCreamType.SCOOPS)
   }
 
   return (

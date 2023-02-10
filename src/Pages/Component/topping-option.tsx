@@ -1,10 +1,11 @@
 import { Col, Form } from "react-bootstrap";
 import { useOrderDetails } from "../../context/order-detail";
+import { IceCreamType } from "../../models/order-detail";
 
-export default function ToppingOption ({ keyItem, name, imagePath }: any) {
+export default function ToppingOption ({ keyItem, name, price, imagePath }: any) {
   const { updateItemCount } = useOrderDetails()
   const hanldleChange = (e: any) => {
-    updateItemCount(name, e.target.checked? 1 : 0, "topping")
+    updateItemCount(name, e.target.checked ? 1 : 0, price, IceCreamType.TOPPING)
   }
     return (
         <>

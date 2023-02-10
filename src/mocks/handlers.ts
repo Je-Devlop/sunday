@@ -6,8 +6,8 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json([
-        { name: "Chocolate", imagePath: "images/chocolate.png" },
-        { name: "Vanilla", imagePath: "images/vanilla.png" },
+        { name: "Chocolate", imagePath: "images/chocolate.png", price: 2 },
+        { name: "Vanilla", imagePath: "images/vanilla.png",  price: 2 },
       ])
     );
   }),
@@ -16,9 +16,9 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json([
-        { name: "Cherries", imagePath: "images/cherries.png" },
-        { name: "M&Ms", imagePath: "images/m-and-m.png" },
-        { name: "Hot fudge", imagePath: "images/hot-fudge.png" },
+        { name: "Cherries", imagePath: "images/cherries.png",  price: 1.5 },
+        { name: "M&Ms", imagePath: "images/m-and-m.png", price: 1.5 },
+        { name: "Hot fudge", imagePath: "images/hot-fudge.png", price: 1.5 },
       ])
     );
   }),

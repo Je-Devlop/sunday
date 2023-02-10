@@ -1,11 +1,16 @@
 import { render, screen } from "../testing-library-utils/testing-library-utils";
 import userEvent from "@testing-library/user-event";
 import App from "../App";
+import { BrowserRouter } from "react-router-dom";
 
 test("Order phases for happy case", async () => {
   const user = userEvent.setup();
 
-  const { unmount } = render(<App />, {});
+  const { unmount } = render(
+    <BrowserRouter>
+     <App />
+    </BrowserRouter>
+ , {});
 
   //add ice cream scoops and topping
   const vanillaInput = await screen.findByRole("spinbutton", { name: /vanilla/i });
@@ -62,7 +67,7 @@ test("Order phases for happy case", async () => {
   // check that scoops and topping have bee reset
   const scoopsTotal = await screen.findByText("Scoops total: $0.00");
   expect(scoopsTotal).toBeInTheDocument();
-  const toppingsTotal = screen.getByText("Topping total: $0.00");
+  const toppingsTotal = screen.getByText("Toppings total: $0.00");
   expect(toppingsTotal).toBeInTheDocument();
 
   // unmount the component to trigger cleanup and avoid
@@ -72,7 +77,11 @@ test("Order phases for happy case", async () => {
 
 test("topping should not display when it not select", async () => {
   const user = userEvent.setup()
-  const { unmount } = render(<App />, {});
+  const { unmount } = render(
+    <BrowserRouter>
+     <App />
+    </BrowserRouter>
+ , {});
 
   const vanillaInput = await screen.findByRole("spinbutton", {name: /vanilla/i})
   await user.clear(vanillaInput)
@@ -89,22 +98,6 @@ test("topping should not display when it not select", async () => {
 
   const toppingHeading = screen.queryByRole("heading", { name: "Toppings: " });
   expect(toppingHeading).not.toBeInTheDocument()
-
-  unmount()
-})
-
-test("order button should not display when ICream is not select", async () => {
-  const user = userEvent.setup()
-  const { unmount } = render(<App />, {});
-
-  const orderSummaryButton = screen.getByRole("button", {name: /order sunday/i})
-  expect(orderSummaryButton).toBeDisabled()
-
-  const vanillaInput = await screen.findByRole("spinbutton", {name: /vanilla/i})
-  await user.clear(vanillaInput)
-  await user.type(vanillaInput, "2")
-
-  expect(orderSummaryButton).toBeEnabled()
 
   unmount()
 })

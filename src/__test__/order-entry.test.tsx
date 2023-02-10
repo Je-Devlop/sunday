@@ -4,13 +4,20 @@ import { rest } from "msw";
 import { server } from "../mocks/server";
 import OrderEntry from "../Pages/Component/order-entry";
 
+const mockedUsedNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...(jest.requireActual("react-router-dom") as any),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
+
 test("handle error for scoops and topping api", async () => {
   server.resetHandlers(
     rest.get("http://localhost:8081/scoops", (req, res, ctx) => res(ctx.status(500))),
     rest.get("http://localhost:8081/topping", (req, res, ctx) => res(ctx.status(500)))
   );
 
-  render(<OrderEntry setOrderPhase={jest.fn()} />, {});
+  render(<OrderEntry />, {});
 
   await waitFor(async () => {
     const alert = await screen.findAllByRole("alert");
@@ -46,17 +53,33 @@ test("should change topping total when topping is selected", async () => {
   const user = userEvent.setup();
   render(<OrderEntry />, {});
 
-  const topppingSubTotal = screen.getByText("Topping total: $", { exact: false });
+  const topppingSubTotal = screen.getByText("Toppings total: $", { exact: false });
   expect(topppingSubTotal).toHaveTextContent("0.00");
 
   const cherriesCheckBox = await screen.findByRole('checkbox', { name:'Cherries' })
   await user.click(cherriesCheckBox)
-  expect(topppingSubTotal).toHaveTextContent("1.50");
+  expect(topppingSubTotal).toHaveTextContent("1.5");
 
   // no need await because if pass condition cherriesCheckBox data is loaded
   const hotFudgeCheckBox = screen.getByRole('checkbox', { name:'Hot fudge' }) 
   await user.click(hotFudgeCheckBox)
   expect(topppingSubTotal).toHaveTextContent("3.00");
+})
+
+test("order button should not display when ICream is not select", async () => {
+  const user = userEvent.setup()
+  const { unmount } = render(<OrderEntry />, {});
+
+  const orderButton = screen.getByRole("button", {name: /order sunday/i})
+  expect(orderButton).toBeDisabled()
+
+  const vanillaInput = await screen.findByRole("spinbutton", {name: /vanilla/i})
+  await user.clear(vanillaInput)
+  await user.type(vanillaInput, "2")
+
+  expect(orderButton).toBeEnabled()
+
+  unmount()
 })
 
 describe("Grand total", () => {

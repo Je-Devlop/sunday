@@ -1,29 +1,26 @@
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import { useOrderDetails } from "../../context/order-detail";
+import { useNavigate } from "react-router-dom";
 import { orderSunday } from "../../service/api";
 import AlertBanner from "../Component/alertBanner";
 
-export default function OrderConfirmation({ setOrderPhase }: any) {
-  const { resetOrder } = useOrderDetails();
-  const [orderNumber, setOrderNumber] = useState();
+export default function OrderConfirmation() {
+  const [orderNumber, setOrderNumber] = useState<string>();
   const [error, setError] = useState<boolean>();
+
+  const navigate = useNavigate();
 
   const orderICream = async () => {
     const response = await orderSunday();
     if (response.status === 201) {
       setOrderNumber(response.data.orderNumber);
     } else {
-      setError(true)
+      setError(true);
     }
   };
 
   const handleClick = () => {
-    // clear the order details
-    resetOrder();
-
-    // send back to order page
-    setOrderPhase("inprogress");
+    navigate("/");
   };
 
   useEffect(() => {

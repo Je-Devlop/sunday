@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { pricePerItem } from "../constants";
+import { IceCreamType, OptionCount } from "../models/order-detail";
 
 const OrderDetail = createContext<any>(undefined);
 
@@ -14,41 +14,50 @@ export function useOrderDetails() {
 }
 
 export function OrderDetailsProvider(props: any) {
-  const [optionCounts, setOptionCounts] = useState<any>({
-    scoops: {}, // example: {Chocolate:1, Vanilla:2}
-    topping: {}, // example: {Gummi Bears:1,}
+  const [optionCounts, setOptionCounts] = useState<OptionCount>({
+    scoops: [],
+    toppings: [],
   });
 
-  const updateItemCount = (itemName: string, newItemCount: number, optionType: string) => {
-    //make a copy of existing state
-    const newOptionCounts: any = { ...optionCounts };
+  const updateItemCount = (itemName: string, newItemCount: number, price: number, optionType: IceCreamType) => {
+    let newOptionCounts: OptionCount = { ...optionCounts };
 
-    //update the copy with the new information
-    newOptionCounts[optionType][itemName] = newItemCount;
+    const isDuplicated = newOptionCounts[optionType].some((item) => item.name === itemName);
 
-    //update the state with the updated copy
+    if (!isDuplicated) {
+      newOptionCounts[optionType].push({
+        name: itemName,
+        amount: newItemCount,
+        pricePerItem: price,
+      });
+    } else {
+      if (newItemCount === 0) {
+        newOptionCounts[optionType] = newOptionCounts[optionType].filter((item) => item.name !== itemName);
+      } else {
+        const index: number = newOptionCounts[optionType].findIndex((item) => item.name === itemName);
+        newOptionCounts[optionType][index].amount = newItemCount;
+      }
+    }
     setOptionCounts(newOptionCounts);
   };
 
   function resetOrder() {
-    setOptionCounts({ scoops: {}, topping: {} });
+    setOptionCounts({
+      scoops: [],
+      toppings: [],
+    });
   }
 
-  //utlity function
-  function calculateTotal(optionType: string) {
-    // get an array of counts for the option type (for example, [1, 2])
-    const countsArray = Object.values(optionCounts[optionType]);
+  function calculateTotal(optionType: IceCreamType) {
+    const countsArray: Array<any> = optionCounts[optionType];
+    const totalCount = countsArray.reduce((total, value) => total + value.pricePerItem * value.amount, 0);
 
-    //total the value in the array of counts
-    const totalCount = countsArray.reduce((total: number, value: any) => total + value, 0);
-
-    //multiply the total number of items by the price for this item type
-    return totalCount * pricePerItem[optionType];
+    return totalCount;
   }
 
   const totals = {
-    scoops: calculateTotal("scoops"),
-    topping: calculateTotal("topping"),
+    scoops: calculateTotal(IceCreamType.SCOOPS),
+    toppings: calculateTotal(IceCreamType.TOPPING),
   };
 
   const value = { optionCounts, updateItemCount, resetOrder, totals };

@@ -1,13 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Form, Popover, OverlayTrigger } from "react-bootstrap";
+import { useOrderDetails } from "../../context/order-detail";
 
-export default function SummaryForm({setOrderPhase}: any) {
+export default function SummaryForm() {
+  const navigate = useNavigate();
+
   // eslint-disable-next-line no-mixed-operators, no-undef
   const [isChecked, setIsChecked] = useState(Boolean);
+  const { resetOrder } = useOrderDetails()
 
   const handlerSubmit = (event: any) => {
-    event.preventDefault();
-    setOrderPhase("completed")
+    navigate("/order-confirm")
+    resetOrder()
   }
 
   const popover = (
