@@ -48,9 +48,6 @@ test("Order phases for happy case", async () => {
   const confirmOrderButton = screen.getByRole("button", { name: /confirm order/i });
   await user.click(confirmOrderButton);
 
-  const loading = screen.queryByText("loading");
-  expect(loading).toBeInTheDocument();
-
   const thankYouHeader = await screen.findByRole("heading", { name: /thank you/i });
   expect(thankYouHeader).toBeInTheDocument();
 

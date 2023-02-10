@@ -10,7 +10,7 @@ function App() {
        <Routes>
         <Route path="/" element={<OrderEntry/>} />
         <Route path={"/order-summary"} element={<OrderSummary/>}/>
-        <Route path={"/order-confirm"} element={<OrderConfirmation/>}/>
+        <Route path={"/order-confirm/:orderID"} element={<OrderConfirmation/>}/>
        </Routes>
     </OrderDetailsProvider>
   );

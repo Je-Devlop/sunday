@@ -1,6 +1,8 @@
 import user from "@testing-library/user-event";
+import { rest } from "msw";
+import { server } from "../mocks/server";
 import SummaryForm from "../Pages/Summary/summary-form";
-import { screen, render } from "../testing-library-utils/testing-library-utils";
+import { screen, render, waitFor } from "../testing-library-utils/testing-library-utils";
 
 const mockedUsedNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
@@ -44,3 +46,26 @@ test("Popover should response to hover", async () => {
   await user.unhover(termAndCondition);
   expect(popover).not.toBeInTheDocument();
 });
+
+test("Should show error when submit order error", async () => {
+  server.resetHandlers(
+    rest.get("http://localhost:8989/order", (req, res, ctx) => res(ctx.status(500))),
+  );
+
+  render(<SummaryForm />, {});
+
+  const confirmButton = screen.getByRole('button', {name: /confirm order/i})
+  expect(confirmButton).toBeDisabled()
+
+  const checkBox = screen.getByRole("checkbox", { name: /terms and conditions/i });
+
+  expect(checkBox).toBeEnabled();
+  await user.click(checkBox);
+  expect(confirmButton).toBeEnabled();
+  await user.click(confirmButton)
+
+  await waitFor(async () => {
+    const alert = await screen.findByRole("alert");
+    expect(alert).toBeInTheDocument();
+  });
+})
